@@ -395,12 +395,24 @@ const authRoutes = require('./routes/auth');
 const resumeRoutes = require('./routes/resumes');
 const app = express();
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://resume-builder-frontend-rouge.vercel.app'
+];
+
 app.use(cors({
-  origin: 'https://resume-builder-frontend-rouge.vercel.app',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -420,6 +432,10 @@ connectDB();
 // Routes
 app.use('/api', authRoutes);
 app.use('/api/resumes', resumeRoutes);
+
+app.use('/', (req, res) => {
+  res.send('Welcome to the Resume Builder API');
+});
 // Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port${PORT}`));
