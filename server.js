@@ -397,7 +397,7 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://resume-builder-frontend-rouge.vercel.app'
+  'https://resume-builder-frontend-h8wa.onrender.com'
 ];
 
 app.use(cors({
